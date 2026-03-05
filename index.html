@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RepTrack — Where Work Becomes Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Brand tokens ───────────────────────────────────────── */
+  :root {
+    --navy:      #0F2742;
+    --navy-deep: #091e33;
+    --gold:      #C6A24A;
+    --gold-pale: #faf3dc;
+    --gold-bright:#e8c870;
+    --gold-deep: #9a7830;
+    --slate:     #4D6785;
+    --slate-mid: #2d4a6a;
+    --slate-light:#7a96b0;
+    --ivory:     #F7F5EA;
+    --ivory-mid: #ede9d8;
+    --ivory-deep:#d4cfbd;
+    --green:     #256b45;
+    --green-pale:#e4f2ea;
+    --red:       #993030;
+    --red-pale:  #f5e4e4;
+    --white:     #ffffff;
+    --text:      #0F2742;
+    --text-mid:  #2d4a6a;
+    --text-light:#4D6785;
+  }
+
+  /* ── Reset ──────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ivory);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── Utility ─────────────────────────────────────────────── */
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .serif { font-family: 'Instrument Serif', serif; }
+  .gold { color: var(--gold); }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+  /* ── Scroll reveal ─────────────────────────────────────── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* ═══════════════════════════════════════════════════════════
+     NAV
+  ═══════════════════════════════════════════════════════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(9,30,51,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(198,162,74,.2);
+    transition: border-color .3s;
+  }
+  .nav-inner {
+    max-width: 1120px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-mark {
+    width: 34px; height: 34px;
+    background: var(--navy);
+    border: 1.5px solid var(--gold);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-wordmark {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff; letter-spacing: -.3px;
+  }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--slate-light); text-decoration: none;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-cta {
+    background: var(--gold); color: var(--navy);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 9px 20px; border-radius: 2px;
+    text-decoration: none; transition: background .2s;
+    border: none; cursor: pointer;
+  }
+  .nav-cta:hover { background: var(--gold-bright); }
+
+  /* ═══════════════════════════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════════════════════════ */
+  .hero {
+    background: var(--navy-deep);
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding-top: 64px;
+  }
+
+  /* Subtle grid pattern */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(198,162,74,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(198,162,74,.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  /* Gold accent lines */
+  .hero::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+    opacity: .6;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1120px; margin: 0 auto;
+    padding: 80px 28px 100px;
+    display: grid; grid-template-columns: 1fr 480px; gap: 80px; align-items: center;
+  }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-heading {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    line-height: 1.08;
+    color: #fff; margin-bottom: 24px;
+  }
+  .hero-heading em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; line-height: 1.9;
+    color: var(--slate-light); margin-bottom: 40px;
+    max-width: 480px;
+  }
+
+  .hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--gold); color: var(--navy);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 14px 28px; border-radius: 2px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background .2s, transform .15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-bright); transform: translateY(-1px); }
+
+  .btn-ghost {
+    color: var(--slate-light);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 1px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color .2s;
+  }
+  .btn-ghost:hover { color: var(--gold-bright); }
+  .btn-ghost svg { transition: transform .2s; }
+  .btn-ghost:hover svg { transform: translateX(3px); }
+
+  /* Hero stats strip */
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 52px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(198,162,74,.15);
+  }
+  .hero-stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px; color: var(--gold); line-height: 1;
+  }
+  .hero-stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--slate-light); margin-top: 5px;
+  }
+
+  /* Hero right — mock UI card */
+  .hero-card {
+    background: rgba(15,39,66,.7);
+    border: 1px solid rgba(198,162,74,.2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,.4);
+    animation: cardFloat 6s ease-in-out infinite;
+  }
+  @keyframes cardFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .hero-card-header {
+    background: var(--navy-deep);
+    border-bottom: 2px solid var(--gold);
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .hero-card-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-green { background: #3aaf75; }
+  .dot-amber { background: var(--gold); }
+  .dot-red   { background: var(--red); }
+  .hero-card-body { padding: 16px 18px; }
+  .card-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(198,162,74,.08);
+  }
+  .card-row:last-child { border-bottom: none; }
+  .card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--slate-light);
+  }
+  .card-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; font-weight: 500;
+  }
+  .card-value.green { color: #3aaf75; }
+  .card-value.gold  { color: var(--gold); }
+  .card-value.red   { color: #e05050; }
+  .card-badge {
+    padding: 2px 8px; border-radius: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 600; letter-spacing: .5px;
+  }
+  .badge-green { background: var(--green-pale); color: var(--green); border: 1px solid #7bcfa0; }
+  .badge-amber { background: var(--gold-pale); color: var(--gold-deep); border: 1px solid var(--gold); }
+  .badge-red   { background: var(--red-pale); color: var(--red); border: 1px solid #e09090; }
+
+  /* Typing animation in card */
+  .typing-line {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--gold-bright);
+    background: rgba(198,162,74,.07);
+    border: 1px solid rgba(198,162,74,.15);
+    border-radius: 3px;
+    padding: 8px 12px; margin-bottom: 8px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .typing-icon { color: var(--slate-light); flex-shrink: 0; }
+  .typing-text { color: #a0bcd0; line-height: 1.6; font-size: 11px; }
+  .cursor {
+    display: inline-block; width: 2px; height: 12px;
+    background: var(--gold); margin-left: 2px; vertical-align: middle;
+    animation: blink .8s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ═══════════════════════════════════════════════════════════
+     PROOF BAR
+  ═══════════════════════════════════════════════════════════ */
+  .proof-bar {
+    background: var(--gold);
+    padding: 14px 0;
+    overflow: hidden;
+  }
+  .proof-bar-inner {
+    display: flex; gap: 0;
+    animation: marquee 28s linear infinite;
+    white-space: nowrap; width: max-content;
+  }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .proof-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--navy); padding: 0 36px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .proof-item::after { content: '·'; opacity: .5; }
+
+  /* ═══════════════════════════════════════════════════════════
+     PROBLEM SECTION
+  ═══════════════════════════════════════════════════════════ */
+  .problem {
+    background: var(--ivory);
+    padding: 120px 0;
+  }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 28px; height: 1px; background: var(--gold);
+  }
+  .section-heading {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    color: var(--navy); line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .section-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; line-height: 1.9;
+    color: var(--slate); max-width: 520px;
+  }
+
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px; margin-top: 64px;
+    background: var(--ivory-deep);
+    border: 1px solid var(--ivory-deep);
+  }
+  .problem-cell {
+    background: var(--ivory);
+    padding: 36px 32px;
+    position: relative;
+    transition: background .2s;
+  }
+  .problem-cell:hover { background: #fff; }
+  .problem-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px; color: var(--ivory-deep);
+    line-height: 1; margin-bottom: 16px;
+    transition: color .2s;
+  }
+  .problem-cell:hover .problem-num { color: var(--gold); }
+  .problem-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--navy); margin-bottom: 10px;
+  }
+  .problem-body {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; line-height: 1.9;
+    color: var(--slate);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     HOW IT WORKS
+  ═══════════════════════════════════════════════════════════ */
+  .how {
+    background: var(--navy);
+    padding: 120px 0;
+    position: relative; overflow: hidden;
+  }
+  .how::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 80% 20%, rgba(198,162,74,.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .how .section-heading { color: #fff; }
+  .how .section-sub { color: var(--slate-light); }
+
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 40px; margin-top: 72px;
+  }
+  .step {
+    position: relative;
+    padding-top: 24px;
+    border-top: 2px solid rgba(198,162,74,.2);
+    transition: border-color .3s;
+  }
+  .step:hover { border-color: var(--gold); }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .step-icon {
+    width: 48px; height: 48px;
+    background: rgba(198,162,74,.1);
+    border: 1px solid rgba(198,162,74,.2);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+    transition: background .2s, border-color .2s;
+  }
+  .step:hover .step-icon { background: rgba(198,162,74,.18); border-color: var(--gold); }
+  .step-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff; margin-bottom: 12px;
+  }
+  .step-body {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; line-height: 1.9;
+    color: var(--slate-light);
+  }
+
+  /* Connector lines between steps */
+  .steps-connector {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin-top: 48px;
+    position: relative;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     FEATURES
+  ═══════════════════════════════════════════════════════════ */
+  .features { background: var(--ivory); padding: 120px 0; }
+
+  .features-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 24px; margin-top: 72px;
+  }
+  .feature-card {
+    background: #fff;
+    border: 1px solid var(--ivory-deep);
+    border-radius: 3px;
+    padding: 36px;
+    transition: border-color .25s, box-shadow .25s, transform .25s;
+    cursor: default;
+  }
+  .feature-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 8px 40px rgba(198,162,74,.1);
+    transform: translateY(-2px);
+  }
+  .feature-card.featured {
+    grid-column: span 2;
+    background: var(--navy);
+    border-color: rgba(198,162,74,.3);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  }
+  .feature-card.featured:hover {
+    border-color: var(--gold);
+    box-shadow: 0 12px 60px rgba(9,30,51,.4);
+  }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--gold-pale);
+    border: 1px solid var(--ivory-deep);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 20px;
+  }
+  .feature-card.featured .feature-icon {
+    background: rgba(198,162,74,.12);
+    border-color: rgba(198,162,74,.25);
+  }
+  .feature-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--navy); margin-bottom: 10px;
+  }
+  .feature-card.featured .feature-title { color: #fff; font-size: 24px; }
+  .feature-body {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; line-height: 1.9;
+    color: var(--slate);
+  }
+  .feature-card.featured .feature-body { color: var(--slate-light); font-size: 12px; }
+  .feature-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 10px;
+    background: var(--gold-pale); color: var(--gold-deep);
+    border: 1px solid rgba(198,162,74,.3);
+    border-radius: 20px;
+  }
+  .feature-card.featured .pill {
+    background: rgba(198,162,74,.12); color: var(--gold-bright);
+    border-color: rgba(198,162,74,.25);
+  }
+
+  /* Rules list in featured card */
+  .rule-list { list-style: none; margin-top: 20px; }
+  .rule-list li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--slate-light);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(198,162,74,.1);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .rule-list li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+  /* ═══════════════════════════════════════════════════════════
+     HIGH EARNER SECTION
+  ═══════════════════════════════════════════════════════════ */
+  .earner {
+    background: var(--navy-deep);
+    padding: 120px 0;
+    position: relative; overflow: hidden;
+  }
+  .earner::before {
+    content: '';
+    position: absolute;
+    right: -200px; top: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(198,162,74,.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .earner-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .earner .section-heading { color: #fff; }
+  .earner .section-sub { color: var(--slate-light); }
+
+  .stakes-list { margin-top: 32px; }
+  .stake {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(198,162,74,.1);
+  }
+  .stake:last-child { border-bottom: none; }
+  .stake-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: rgba(198,162,74,.1);
+    border: 1px solid rgba(198,162,74,.2);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .stake-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: #fff; margin-bottom: 4px;
+  }
+  .stake-body {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; line-height: 1.8;
+    color: var(--slate-light);
+  }
+
+  .numbers-panel {
+    background: rgba(15,39,66,.6);
+    border: 1px solid rgba(198,162,74,.2);
+    border-radius: 4px;
+    padding: 36px;
+  }
+  .numbers-panel-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(198,162,74,.2);
+  }
+  .number-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(198,162,74,.07);
+  }
+  .number-row:last-child { border-bottom: none; }
+  .number-scenario {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--slate-light);
+  }
+  .number-val {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+  }
+  .number-val.green { color: #3aaf75; }
+  .number-val.red { color: #e05050; }
+  .number-note {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--slate-light);
+    letter-spacing: .5px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     CPA PORTAL
+  ═══════════════════════════════════════════════════════════ */
+  .cpa { background: var(--ivory); padding: 120px 0; }
+  .cpa-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .cpa-card {
+    background: var(--navy);
+    border: 1px solid rgba(198,162,74,.2);
+    border-radius: 4px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(9,30,51,.25);
+  }
+  .cpa-card-bar {
+    background: var(--navy-deep);
+    border-bottom: 2px solid var(--gold);
+    padding: 10px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cpa-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .cpa-card-body { padding: 20px; }
+  .cpa-client-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px;
+    border-radius: 2px;
+    border: 1px solid rgba(198,162,74,.08);
+    margin-bottom: 8px;
+    transition: background .15s;
+  }
+  .cpa-client-row:hover { background: rgba(198,162,74,.06); }
+  .cpa-client-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600; color: #fff;
+  }
+  .cpa-client-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--slate-light); margin-top: 2px;
+  }
+  .score-ring-sm {
+    width: 40px; height: 40px;
+    position: relative; flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     TESTIMONIALS
+  ═══════════════════════════════════════════════════════════ */
+  .testimonials { background: #fff; padding: 100px 0; }
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 64px;
+  }
+  .testimonial {
+    background: var(--ivory);
+    border: 1px solid var(--ivory-deep);
+    border-radius: 3px;
+    padding: 32px;
+    transition: border-color .2s, transform .2s;
+  }
+  .testimonial:hover { border-color: var(--gold); transform: translateY(-3px); }
+  .testimonial-quote {
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px; line-height: 1.65;
+    color: var(--navy); margin-bottom: 24px;
+  }
+  .testimonial-quote::before { content: '"'; color: var(--gold); font-size: 28px; line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .testimonial-author {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600; color: var(--navy);
+  }
+  .testimonial-role {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--slate); margin-top: 3px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     PRICING
+  ═══════════════════════════════════════════════════════════ */
+  .pricing { background: var(--ivory); padding: 120px 0; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 72px; align-items: stretch;
+  }
+  .pricing-card {
+    background: #fff;
+    border: 1px solid var(--ivory-deep);
+    border-radius: 3px;
+    padding: 40px 36px;
+    display: flex; flex-direction: column;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(9,30,51,.1); }
+  .pricing-card.featured-plan {
+    background: var(--navy);
+    border-color: var(--gold);
+    position: relative;
+  }
+  .pricing-badge {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--gold); color: var(--navy);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 14px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .plan-price {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px; color: var(--navy); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .pricing-card.featured-plan .plan-price { color: #fff; }
+  .plan-price span { font-family: 'Inter', sans-serif; font-size: 18px; color: var(--slate); }
+  .pricing-card.featured-plan .plan-price span { color: var(--slate-light); }
+  .plan-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--slate); line-height: 1.7;
+    margin-bottom: 28px; padding-bottom: 28px;
+    border-bottom: 1px solid var(--ivory-deep);
+  }
+  .pricing-card.featured-plan .plan-desc {
+    color: var(--slate-light);
+    border-color: rgba(198,162,74,.2);
+  }
+  .plan-features { flex: 1; margin-bottom: 32px; }
+  .plan-feature {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--text-light);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ivory-deep);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .pricing-card.featured-plan .plan-feature {
+    color: var(--slate-light);
+    border-color: rgba(198,162,74,.1);
+  }
+  .plan-feature::before { content: '✓'; color: var(--green); flex-shrink: 0; font-weight: 700; }
+  .pricing-card.featured-plan .plan-feature::before { color: var(--gold); }
+  .plan-feature:last-child { border-bottom: none; }
+  .plan-btn {
+    display: block; text-align: center; text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 13px 0; border-radius: 2px;
+    transition: all .2s;
+  }
+  .plan-btn-outline {
+    border: 1px solid var(--ivory-deep);
+    color: var(--navy);
+  }
+  .plan-btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .plan-btn-solid {
+    background: var(--gold); color: var(--navy); border: none;
+  }
+  .plan-btn-solid:hover { background: var(--gold-bright); }
+
+  /* ═══════════════════════════════════════════════════════════
+     FINAL CTA
+  ═══════════════════════════════════════════════════════════ */
+  .final-cta {
+    background: var(--navy);
+    padding: 120px 0;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(198,162,74,.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 50%, rgba(198,162,74,.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .final-cta-heading {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    color: #fff; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .final-cta-heading em { color: var(--gold); font-style: italic; }
+  .final-cta-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; color: var(--slate-light);
+    margin-bottom: 48px; line-height: 1.8;
+  }
+  .final-cta-legal {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--slate-light);
+    margin-top: 20px; line-height: 1.7;
+    max-width: 500px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════════════════════ */
+  footer {
+    background: var(--navy-deep);
+    border-top: 1px solid rgba(198,162,74,.15);
+    padding: 60px 0 32px;
+  }
+  .footer-inner {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; margin-bottom: 48px;
+  }
+  .footer-brand-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px;
+  }
+  .footer-tagline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; color: var(--gold); margin-bottom: 14px;
+  }
+  .footer-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; line-height: 1.8; color: var(--slate-light);
+  }
+  .footer-col-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .footer-link {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--slate-light);
+    text-decoration: none; margin-bottom: 10px;
+    transition: color .15s;
+  }
+  .footer-link:hover { color: var(--gold-bright); }
+  .footer-bottom {
+    border-top: 1px solid rgba(198,162,74,.1);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--slate-light);
+  }
+  .footer-disclaimer {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: #2a3a4a;
+    max-width: 500px; text-align: right; line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .hero-card { max-width: 440px; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 32px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+    .earner-inner, .cpa-inner { grid-template-columns: 1fr; gap: 48px; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .hero-stats { flex-wrap: wrap; gap: 20px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">
+        <svg width="22" height="19" viewBox="0 0 28 24" fill="none">
+          <polyline points="3,14 14,4 25,14" stroke="#C6A24A" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <line x1="6" y1="17" x2="22" y2="17" stroke="#7a96b0" stroke-width="1.6" stroke-linecap="round"/>
+          <line x1="7" y1="20" x2="21" y2="20" stroke="#7a96b0" stroke-width="1.2" stroke-linecap="round"/>
+          <polyline points="7,19 12,14 17,16 22,10" stroke="#C6A24A" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+          <polyline points="20,9 22,10 21,12" stroke="#C6A24A" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="nav-wordmark">RepTrack</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#cpa">For CPAs</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#pricing" class="nav-cta">Start Free Trial</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow reveal">IRC §469(c)(7) Documentation</div>
+      <h1 class="hero-heading reveal reveal-delay-1">
+        Where Work<br>
+        Becomes <em>Proof.</em>
+      </h1>
+      <p class="hero-sub mono reveal reveal-delay-2">
+        RepTrack is the AI-powered documentation platform for high-income real estate professionals. Capture every activity, prove every hour, and walk into any IRS audit with an airtight record.
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="#pricing" class="btn-primary">Start Free Trial</a>
+        <a href="#how" class="btn-ghost">
+          See how it works
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <polyline points="6,3 11,8 6,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <div class="hero-stats reveal reveal-delay-4">
+        <div>
+          <div class="hero-stat-num">750</div>
+          <div class="hero-stat-label mono">Hours required</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">3.8%</div>
+          <div class="hero-stat-label mono">NIIT you avoid</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">12</div>
+          <div class="hero-stat-label mono">IRS rules tracked</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">$0</div>
+          <div class="hero-stat-label mono">Advice given</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mock UI card -->
+    <div class="hero-card reveal reveal-delay-2">
+      <div class="hero-card-header">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <div class="hero-card-dot dot-green"></div>
+          <div class="hero-card-dot dot-amber"></div>
+          <div class="hero-card-dot dot-red"></div>
+        </div>
+        <span class="hero-card-title">RepTrack · Maria Rodriguez · 2024</span>
+      </div>
+      <div class="hero-card-body">
+        <div class="typing-line">
+          <span class="typing-icon">◈</span>
+          <span class="typing-text">Supervised HVAC inspection at Butler St — about 90 minutes<span class="cursor"></span></span>
+        </div>
+        <div style="background:rgba(37,107,69,.12);border:1px solid rgba(37,107,69,.25);border-radius:3px;padding:10px 14px;margin-bottom:10px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#3aaf75;margin-bottom:4px;">✓ Filing under Vendor Coordination</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#5a8a70;line-height:1.6;">Direct oversight of licensed contractor at owned rental property. 90 minutes logged.</div>
+        </div>
+        <div class="card-row">
+          <span class="card-label">RE Hours Filed</span>
+          <span class="card-value gold">842 / 750 hrs</span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">50% Test</span>
+          <span class="card-value green">67.3% ✓</span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">Audit Readiness</span>
+          <span>
+            <span class="card-badge badge-green">84 · STRONG</span>
+          </span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">Flags to Review</span>
+          <span class="card-badge badge-amber">2 entries</span>
+        </div>
+        <div class="card-row">
+          <span class="card-label">Both Criteria</span>
+          <span class="card-badge badge-green">✦ MET</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROOF BAR ════════════════════════════════════════════ -->
+<div class="proof-bar">
+  <div class="proof-bar-inner">
+    <!-- doubled for seamless loop -->
+    <div class="proof-item">Contemporaneous Logs</div>
+    <div class="proof-item">750-Hour Tracking</div>
+    <div class="proof-item">50% Time Test</div>
+    <div class="proof-item">Material Participation</div>
+    <div class="proof-item">NIIT Elimination</div>
+    <div class="proof-item">IRS Flag Detection</div>
+    <div class="proof-item">CPA Partner Portal</div>
+    <div class="proof-item">Audit Readiness Score</div>
+    <div class="proof-item">AI Documentation Assistant</div>
+    <div class="proof-item">Whisper Voice Input</div>
+    <div class="proof-item">Contemporaneous Logs</div>
+    <div class="proof-item">750-Hour Tracking</div>
+    <div class="proof-item">50% Time Test</div>
+    <div class="proof-item">Material Participation</div>
+    <div class="proof-item">NIIT Elimination</div>
+    <div class="proof-item">IRS Flag Detection</div>
+    <div class="proof-item">CPA Partner Portal</div>
+    <div class="proof-item">Audit Readiness Score</div>
+    <div class="proof-item">AI Documentation Assistant</div>
+    <div class="proof-item">Whisper Voice Input</div>
+  </div>
+</div>
+
+<!-- ═══ PROBLEM ══════════════════════════════════════════════ -->
+<section class="problem">
+  <div class="container">
+    <div class="section-label reveal">The Problem</div>
+    <h2 class="section-heading reveal reveal-delay-1">High earners lose REP status<br>not because they didn't work —<br><em style="font-style:italic;color:var(--gold)">because they can't prove it.</em></h2>
+    <p class="section-sub mono reveal reveal-delay-2">The IRS places the entire burden of proof on you. Without a contemporaneous, organized record, even legitimate participation gets denied in audit.</p>
+
+    <div class="problem-grid">
+      <div class="problem-cell reveal">
+        <div class="problem-num">01</div>
+        <div class="problem-title">No contemporaneous log</div>
+        <div class="problem-body">Reconstructed logs created at tax time are routinely rejected by IRS examiners. Courts have consistently ruled against taxpayers who couldn't show daily or weekly records.</div>
+      </div>
+      <div class="problem-cell reveal reveal-delay-1">
+        <div class="problem-num">02</div>
+        <div class="problem-title">Investor hours counted by mistake</div>
+        <div class="problem-body">Reviewing P&Ls, attending investor meetings, monitoring performance — none of these count. Taxpayers routinely inflate hours with investor activities that the IRS specifically excludes.</div>
+      </div>
+      <div class="problem-cell reveal reveal-delay-2">
+        <div class="problem-num">03</div>
+        <div class="problem-title">W-2 job kills the 50% test</div>
+        <div class="problem-body">A physician working 2,000 W-2 hours needs 2,001+ RE hours just to pass the 50% test. Most high earners fail here and never realize it until audit.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ════════════════════════════════════════ -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-label reveal">How It Works</div>
+    <h2 class="section-heading reveal reveal-delay-1">Three steps to audit-ready<br>documentation</h2>
+    <p class="section-sub mono reveal reveal-delay-2">RepTrack works the way you actually work — tell it what you did, and it handles the filing, categorization, and IRS flag detection.</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num mono">01</div>
+        <div class="step-icon">◈</div>
+        <div class="step-title">Tell the assistant what you did</div>
+        <div class="step-body">Type or speak. The AI assistant understands real estate activities — it knows the difference between a qualifying property management call and a non-qualifying investor meeting. It files automatically.</div>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num mono">02</div>
+        <div class="step-icon">⚑</div>
+        <div class="step-title">Get flagged before it's a problem</div>
+        <div class="step-body">RepTrack detects 6 IRS risk patterns in real time — investor activity, W-2 employee hours, third-party property manager risk, reconstructed logs, and more. Flags appear before you file.</div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num mono">03</div>
+        <div class="step-icon">⚖</div>
+        <div class="step-title">Share with your CPA, defend anything</div>
+        <div class="step-body">Your CPA logs in to their portal and sees every client's audit readiness score, flagged entries, and complete time log. One click generates an IRS documentation package.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ════════════════════════════════════════════ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label reveal">Features</div>
+    <h2 class="section-heading reveal reveal-delay-1">Every tool the IRS<br>expects you to have</h2>
+
+    <div class="features-grid">
+
+      <!-- Featured: Rules Engine -->
+      <div class="feature-card featured reveal">
+        <div>
+          <div class="feature-icon">⚑</div>
+          <div class="feature-title">Rules Engine</div>
+          <div class="feature-body">12 IRS rules for high-income earners, fully explained, with your live data mapped against each one. Know your audit risk before your CPA does.</div>
+          <div class="feature-pills">
+            <span class="pill">IRC §469(c)(7)</span>
+            <span class="pill">NIIT §1411</span>
+            <span class="pill">Material Participation</span>
+            <span class="pill">Grouping Election</span>
+          </div>
+        </div>
+        <div>
+          <ul class="rule-list">
+            <li>750-Hour Test with live progress tracking</li>
+            <li>50% of Work Time test — W-2 aware</li>
+            <li>Investor Activity exclusion detector</li>
+            <li>W-2 Employee Hours rule (>5% ownership)</li>
+            <li>Third-Party Property Manager risk flag</li>
+            <li>3.8% NIIT threshold calculator</li>
+            <li>STR Bypass explanation (&le;7-day avg stay)</li>
+            <li>MFJ Spouse rules — hours cannot be combined</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">◉</div>
+        <div class="feature-title">Audit Readiness Score</div>
+        <div class="feature-body">An 8-factor score (0–100) computed from your actual data. Hours filed, log consistency, flag count, criteria status, documentation density — all in one number.</div>
+        <div class="feature-pills">
+          <span class="pill">Live score</span>
+          <span class="pill">8 factors</span>
+          <span class="pill">Green / amber / red</span>
+        </div>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">🎙</div>
+        <div class="feature-title">Whisper Voice Input</div>
+        <div class="feature-body">Log activities by speaking. OpenAI Whisper transcription is tuned for real estate terminology — IRC 469, cost segregation, material participation, and more are spelled correctly.</div>
+        <div class="feature-pills">
+          <span class="pill">OpenAI Whisper</span>
+          <span class="pill">RE-domain prompt</span>
+          <span class="pill">Mobile-ready</span>
+        </div>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">⊟</div>
+        <div class="feature-title">Time Log with IRS Flags</div>
+        <div class="feature-body">Every entry is automatically categorized across 12 IRS activity types. Entries with risk flags show a warning badge and a plain-language note for your CPA. Exportable to CSV or IRS package.</div>
+        <div class="feature-pills">
+          <span class="pill">12 categories</span>
+          <span class="pill">6 flag types</span>
+          <span class="pill">CSV + PDF export</span>
+        </div>
+      </div>
+
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">⇄</div>
+        <div class="feature-title">MFJ Spouse Sync</div>
+        <div class="feature-body">For Married Filing Jointly couples, track both spouses' logs independently. The platform enforces the IRS rule: hours cannot be combined for the 750-hr or 50% tests, but do count for material participation.</div>
+        <div class="feature-pills">
+          <span class="pill">MFJ rules enforced</span>
+          <span class="pill">Separate logs</span>
+          <span class="pill">Color-coded views</span>
+        </div>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-icon">✉</div>
+        <div class="feature-title">Communications Hub</div>
+        <div class="feature-body">Every email you send about your properties is part of your documentation. The AI drafts professional communications to tenants, vendors, and contractors — and files them in your record.</div>
+        <div class="feature-pills">
+          <span class="pill">AI-drafted</span>
+          <span class="pill">Sent log</span>
+          <span class="pill">Audit trail</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HIGH EARNER ══════════════════════════════════════════ -->
+<section class="earner">
+  <div class="container">
+    <div class="earner-inner">
+      <div>
+        <div class="section-label reveal">Built for High-Income Earners</div>
+        <h2 class="section-heading reveal reveal-delay-1">The stakes are different<br>when your W-2 is $500K</h2>
+        <p class="section-sub mono reveal reveal-delay-2">The higher your income, the more the IRS scrutinizes your REP claim — and the more documentation quality matters. RepTrack is built for the scenarios that actually affect high earners.</p>
+        <div class="stakes-list">
+          <div class="stake reveal">
+            <div class="stake-icon">$</div>
+            <div>
+              <div class="stake-title">NIIT elimination</div>
+              <div class="stake-body">At $600K W-2 income + $80K rental income, you owe $3,040/yr in NIIT alone. REP status eliminates it — but only with documentation to back the claim.</div>
+            </div>
+          </div>
+          <div class="stake reveal reveal-delay-1">
+            <div class="stake-icon">⊘</div>
+            <div>
+              <div class="stake-title">$25K offset is worthless above $150K MAGI</div>
+              <div class="stake-body">The passive loss allowance phases out completely at $150K MAGI. Every high earner needs full REP status — not the active participation workaround.</div>
+            </div>
+          </div>
+          <div class="stake reveal reveal-delay-2">
+            <div class="stake-icon">⚡</div>
+            <div>
+              <div class="stake-title">Cost segregation without REP = trapped losses</div>
+              <div class="stake-body">Cost segregation generates large paper losses — but without REP status above $150K MAGI, they're suspended indefinitely. RepTrack helps you prove the status that unlocks them.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="numbers-panel">
+          <div class="numbers-panel-title mono">Annual Tax Impact · Example Scenarios</div>
+          <div class="number-row">
+            <div>
+              <div class="number-scenario">Physician, $600K W-2, 4 rentals</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#3a5a78;margin-top:3px;">With REP status + cost seg</div>
+            </div>
+            <div style="text-align:right">
+              <div class="number-val green">−$142K</div>
+              <div class="number-note">taxable income reduction</div>
+            </div>
+          </div>
+          <div class="number-row">
+            <div>
+              <div class="number-scenario">Same physician without REP</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#3a5a78;margin-top:3px;">Losses suspended, NIIT applies</div>
+            </div>
+            <div style="text-align:right">
+              <div class="number-val red">$0</div>
+              <div class="number-note">benefit — all losses trapped</div>
+            </div>
+          </div>
+          <div class="number-row">
+            <div>
+              <div class="number-scenario">NIIT on $80K rental income</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#3a5a78;margin-top:3px;">MFJ over $250K MAGI threshold</div>
+            </div>
+            <div style="text-align:right">
+              <div class="number-val red">+$3,040</div>
+              <div class="number-note">per year without REP</div>
+            </div>
+          </div>
+          <div style="margin-top:20px;padding:12px;background:rgba(198,162,74,.07);border:1px solid rgba(198,162,74,.15);border-radius:2px;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5a7890;line-height:1.7;">RepTrack does not give tax advice. These figures are illustrative examples only. Consult your CPA or tax attorney for advice specific to your situation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CPA PORTAL ═══════════════════════════════════════════ -->
+<section class="cpa" id="cpa">
+  <div class="container">
+    <div class="cpa-inner">
+      <div>
+        <div class="section-label reveal">CPA Partner Portal</div>
+        <h2 class="section-heading reveal reveal-delay-1">Give your CPA<br>the full picture</h2>
+        <p class="section-sub mono reveal reveal-delay-2">CPAs get a dedicated portal to review all their RepTrack clients — audit scores, flagged entries, communications on file, and one-click IRS package export. No more emailing spreadsheets.</p>
+        <div class="stakes-list" style="margin-top:28px;">
+          <div class="stake reveal reveal-delay-1">
+            <div class="stake-icon">⚖</div>
+            <div>
+              <div class="stake-title">Multi-client dashboard</div>
+              <div class="stake-body">See all clients' audit readiness scores, flag counts, hours, and criteria status in one view. Filter by status: complete, active, needs attention.</div>
+            </div>
+          </div>
+          <div class="stake reveal reveal-delay-2">
+            <div class="stake-icon">↓</div>
+            <div>
+              <div class="stake-title">One-click IRS package</div>
+              <div class="stake-body">Download a complete documentation package for any client — all entries, criteria status, flag summary, communications, and session notes. Formatted for IRS review.</div>
+            </div>
+          </div>
+          <div class="stake reveal reveal-delay-3">
+            <div class="stake-icon">◎</div>
+            <div>
+              <div class="stake-title">Read-only, secure access</div>
+              <div class="stake-body">CPAs can review but never edit client data. Every access is logged. Clients control which CPAs can see their account.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cpa-card reveal reveal-delay-2">
+        <div class="cpa-card-bar">
+          <span class="cpa-card-label">CPA Portal · 4 Clients</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#3aaf75;">● Live</span>
+        </div>
+        <div class="cpa-card-body">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(198,162,74,.1);">
+            <div style="text-align:center">
+              <div style="font-family:'Instrument Serif',serif;font-size:24px;color:#C6A24A;line-height:1;">4</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4D6785;margin-top:3px;letter-spacing:1px;">CLIENTS</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Instrument Serif',serif;font-size:24px;color:#3aaf75;line-height:1;">2</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4D6785;margin-top:3px;letter-spacing:1px;">COMPLETE</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Instrument Serif',serif;font-size:24px;color:#e0a050;line-height:1;">1</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4D6785;margin-top:3px;letter-spacing:1px;">REVIEW</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Instrument Serif',serif;font-size:24px;color:#e05050;line-height:1;">1</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#4D6785;margin-top:3px;letter-spacing:1px;">ATTN</div>
+            </div>
+          </div>
+
+          <div class="cpa-client-row">
+            <div>
+              <div class="cpa-client-name">Maria & Dr. Carlos Rodriguez</div>
+              <div class="cpa-client-sub">MFJ · Maria qualifier · 842 hrs · 2024</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:#3aaf75;font-weight:700;">84</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#3aaf75;background:rgba(37,107,69,.12);padding:2px 6px;border-radius:2px;">STRONG</span>
+            </div>
+          </div>
+          <div class="cpa-client-row">
+            <div>
+              <div class="cpa-client-name">Sandra & Mark Okonkwo</div>
+              <div class="cpa-client-sub">MFJ · Sandra qualifier · 798 hrs · 2024</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:#3aaf75;font-weight:700;">79</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#C6A24A;background:rgba(198,162,74,.12);padding:2px 6px;border-radius:2px;">GOOD</span>
+            </div>
+          </div>
+          <div class="cpa-client-row">
+            <div>
+              <div class="cpa-client-name">James Whitfield</div>
+              <div class="cpa-client-sub">Single · 621 hrs · 2024 · ⚑ 3 flags</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:#e0a050;font-weight:700;">58</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#9a7830;background:rgba(198,162,74,.12);padding:2px 6px;border-radius:2px;">REVIEW</span>
+            </div>
+          </div>
+          <div class="cpa-client-row">
+            <div>
+              <div class="cpa-client-name">Priya & Dev Sharma</div>
+              <div class="cpa-client-sub">MFJ · Priya qualifier · 402 hrs · 2024</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:20px;color:#e05050;font-weight:700;">31</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:#993030;background:rgba(153,48,48,.12);padding:2px 6px;border-radius:2px;">ATTN</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═════════════════════════════════════════ -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-label reveal">From The Field</div>
+    <h2 class="section-heading reveal reveal-delay-1">What documentation<br>actually looks like in audit</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial reveal">
+        <p class="testimonial-quote">My client came in with 847 hours of contemporaneous logs, every entry timestamped, every investor-activity flag already identified and explained. The examiner closed the case in one session.</p>
+        <div class="testimonial-author">Patricia M., CPA</div>
+        <div class="testimonial-role mono">Real estate tax practice · Chicago, IL</div>
+      </div>
+      <div class="testimonial reveal reveal-delay-1">
+        <p class="testimonial-quote">I'm a hospitalist. I used to log my RE hours in a spreadsheet on Sunday nights. My CPA told me that was a problem. RepTrack fixed it — I log on my phone after every activity.</p>
+        <div class="testimonial-author">Dr. James K.</div>
+        <div class="testimonial-role mono">Physician · 6 rental properties · Pittsburgh, PA</div>
+      </div>
+      <div class="testimonial reveal reveal-delay-2">
+        <p class="testimonial-quote">The investor activity flag caught something I didn't even realize was a problem — I'd been logging my monthly portfolio review calls as management hours for three years.</p>
+        <div class="testimonial-author">Sandra O.</div>
+        <div class="testimonial-role mono">Attorney · 4 rental properties · Atlanta, GA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══════════════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label reveal">Pricing</div>
+    <h2 class="section-heading reveal reveal-delay-1">One platform. Two users.<br>Zero guesswork at audit.</h2>
+    <p class="section-sub mono reveal reveal-delay-2">Start free. No credit card required. Cancel anytime.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="plan-name mono">Starter</div>
+        <div class="plan-price">$49<span>/mo</span></div>
+        <div class="plan-desc mono">For individual real estate investors building their documentation practice from scratch.</div>
+        <div class="plan-features">
+          <div class="plan-feature">AI documentation assistant</div>
+          <div class="plan-feature">Whisper voice input</div>
+          <div class="plan-feature">Time log with IRS flag detection</div>
+          <div class="plan-feature">1 qualifying taxpayer</div>
+          <div class="plan-feature">Up to 10 properties</div>
+          <div class="plan-feature">CSV export</div>
+          <div class="plan-feature">Rules Engine (all 12 rules)</div>
+        </div>
+        <a href="#" class="plan-btn plan-btn-outline">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card featured-plan reveal reveal-delay-1">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="plan-name mono">Professional</div>
+        <div class="plan-price" style="color:#fff;">$99<span>/mo</span></div>
+        <div class="plan-desc mono">For high-income earners with active portfolios and a CPA relationship that needs documentation support.</div>
+        <div class="plan-features">
+          <div class="plan-feature">Everything in Starter</div>
+          <div class="plan-feature">MFJ Spouse Sync (2 logs)</div>
+          <div class="plan-feature">Unlimited properties</div>
+          <div class="plan-feature">CPA portal access (1 CPA)</div>
+          <div class="plan-feature">IRS documentation package (PDF)</div>
+          <div class="plan-feature">Document uploads (receipts, contracts)</div>
+          <div class="plan-feature">Audit Readiness Score</div>
+          <div class="plan-feature">Weekly documentation reminders</div>
+        </div>
+        <a href="#" class="plan-btn plan-btn-solid">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card reveal reveal-delay-2">
+        <div class="plan-name mono">CPA Firm</div>
+        <div class="plan-price">$199<span>/mo</span></div>
+        <div class="plan-desc mono">For CPA practices serving multiple REP clients. Manage all clients from one portal.</div>
+        <div class="plan-features">
+          <div class="plan-feature">Everything in Professional</div>
+          <div class="plan-feature">Unlimited client accounts</div>
+          <div class="plan-feature">Multi-client dashboard</div>
+          <div class="plan-feature">Bulk IRS package export</div>
+          <div class="plan-feature">CPA review notes on entries</div>
+          <div class="plan-feature">Priority support</div>
+          <div class="plan-feature">Dedicated onboarding</div>
+        </div>
+        <a href="#" class="plan-btn plan-btn-outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ════════════════════════════════════════════ -->
+<section class="final-cta">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="section-label reveal" style="justify-content:center;">Start Today</div>
+    <h2 class="final-cta-heading reveal reveal-delay-1">
+      Capture the work.<br>
+      Prove the time.<br>
+      <em>Defend the claim.</em>
+    </h2>
+    <p class="final-cta-sub reveal reveal-delay-2">The IRS audit starts with your time log. Make sure yours is ready.</p>
+    <div class="reveal reveal-delay-3" style="display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <a href="#" class="btn-primary" style="font-size:13px;padding:16px 36px;">Start Your Free Trial</a>
+      <a href="#" class="btn-ghost" style="color:var(--slate-light);">
+        Book a Demo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <polyline points="6,3 11,8 6,13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <p class="final-cta-legal reveal reveal-delay-4">RepTrack is a documentation and organizational platform. It does not provide tax, legal, or financial advice. All IRS rules shown are for informational purposes only. Consult your CPA or tax attorney.</p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="width:28px;height:28px;background:var(--navy);border:1.5px solid var(--gold);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="18" height="16" viewBox="0 0 28 24" fill="none">
+              <polyline points="3,14 14,4 25,14" stroke="#C6A24A" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+              <line x1="6" y1="17" x2="22" y2="17" stroke="#7a96b0" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="7" y1="20" x2="21" y2="20" stroke="#7a96b0" stroke-width="1.2" stroke-linecap="round"/>
+              <polyline points="7,19 12,14 17,16 22,10" stroke="#C6A24A" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+              <polyline points="20,9 22,10 21,12" stroke="#C6A24A" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="footer-brand-name">RepTrack</div>
+        </div>
+        <div class="footer-tagline mono">WHERE WORK BECOMES PROOF</div>
+        <p class="footer-desc">IRC §469(c)(7) documentation platform for real estate professionals. Capture, organize, and defend your time records.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <a href="#" class="footer-link">AI Assistant</a>
+        <a href="#" class="footer-link">Time Log</a>
+        <a href="#" class="footer-link">Rules Engine</a>
+        <a href="#" class="footer-link">CPA Portal</a>
+        <a href="#" class="footer-link">Audit Score</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <a href="#" class="footer-link">REP Documentation Guide</a>
+        <a href="#" class="footer-link">750-Hour Checklist</a>
+        <a href="#" class="footer-link">Investor Activity Guide</a>
+        <a href="#" class="footer-link">MFJ Rules Explained</a>
+        <a href="#" class="footer-link">IRS Audit Guide</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a href="#" class="footer-link">About</a>
+        <a href="#" class="footer-link">Pricing</a>
+        <a href="#" class="footer-link">For CPAs</a>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy mono">© 2025 RepTrack. All rights reserved.</div>
+      <div class="footer-disclaimer mono">RepTrack is not a tax advisor. Nothing on this platform constitutes tax, legal, or financial advice. All IRS rules and examples are for informational purposes only.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Sticky nav shadow on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 40 ? '0 4px 30px rgba(0,0,0,.4)' : '';
+    nav.style.borderBottomColor = window.scrollY > 40 ? 'rgba(198,162,74,.35)' : 'rgba(198,162,74,.2)';
+  });
+
+  // Typing animation in hero card
+  const phrases = [
+    "Supervised HVAC inspection at Butler St — about 90 minutes",
+    "Called tenant re lease renewal — Oak St Unit B, 30 min",
+    "Reviewed contractor bid for kitchen reno, 45 minutes",
+    "Quarterly walkthrough of all 4 properties — 4 hours",
+    "Met with CPA re cost segregation study — 90 min",
+  ];
+  let phraseIdx = 0, charIdx = 0, typing = true;
+  const typingEl = document.querySelector('.typing-text');
+
+  function typeNext() {
+    const phrase = phrases[phraseIdx];
+    if (typing) {
+      charIdx++;
+      typingEl.innerHTML = phrase.slice(0, charIdx) + '<span class="cursor"></span>';
+      if (charIdx >= phrase.length) {
+        typing = false;
+        setTimeout(typeNext, 2200);
+        return;
+      }
+      setTimeout(typeNext, 38);
+    } else {
+      charIdx--;
+      typingEl.innerHTML = phrase.slice(0, charIdx) + '<span class="cursor"></span>';
+      if (charIdx === 0) {
+        typing = true;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(typeNext, 400);
+        return;
+      }
+      setTimeout(typeNext, 18);
+    }
+  }
+  setTimeout(typeNext, 1800);
+</script>
+</body>
+</html>
